@@ -3,7 +3,7 @@
  *
  * @type {Object}
  */
-var DEPS_MAP = {
+const DEPS_MAP: { [env: string]: any } = {
   node: {
     popsicle: "require('popsicle')",
     ClientOAuth2: "require('client-oauth2')"
@@ -25,7 +25,7 @@ var DEPS_MAP = {
  * @param  {String} env
  * @return {Array}
  */
-function mapDeps (deps, env) {
+function mapDeps (deps: string[], env: string) {
   if (!env) {
     return deps
   }
@@ -37,17 +37,11 @@ function mapDeps (deps, env) {
 
 /**
  * Create a dependencies string.
- *
- * @param  {Object} context
- * @param  {String} env
- * @return {String}
  */
-module.exports = function (context, env) {
-  var deps = ['popsicle']
+export default function dependencies (api: any, env: string) {
+  const deps = ['popsicle']
 
-  var hasOAuth2 = Object.keys(context.security).some(function (name) {
-    return context.security[name].type === 'OAuth 2.0'
-  })
+  const hasOAuth2 = api.securitySchemes().some((x: any) => x.type() === 'OAuth 2.0')
 
   // OAuth 2.0 depends on ClientOAuth2 to work.
   if (hasOAuth2) {

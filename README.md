@@ -28,7 +28,7 @@ raml-javascript-generator api.raml -o api-client-js
 ```js
 var jsGenerator = require('raml-javascript-generator')
 
-var output = jsGenerator(/* raml, data */)
+var output = jsGenerator(/* api, data */)
 ```
 
 ## License

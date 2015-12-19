@@ -1,14 +1,12 @@
-# {{title}}
+# {{= it.api.title() }}
 
-Browser and node module for making API requests against [{{title}}]({{baseUri}}).
-
-**Please note: This module uses [Popsicle](https://github.com/blakeembrey/popsicle) to make API requests. Promises must be supported or polyfilled on all target environments.**
+Browser and node module for making API requests against [{{= it.api.title() }}]({{= it.api.baseUri() }}).
 
 ## Installation
 
 ```
-npm install {{paramCase title}} --save
-bower install {{paramCase title}} --save
+npm install {{= it.helpers.param(it.api.title()) }} --save
+bower install {{= it.helpers.param(it.api.title()) }} --save
 ```
 
 ## Usage
@@ -16,22 +14,22 @@ bower install {{paramCase title}} --save
 ### Node
 
 ```javascript
-var {{pascalCase title}} = require('{{paramCase title}}');
+var {{= it.helpers.pascal(it.api.title()) }} = require('{{= it.helpers.param(it.api.title()) }}');
 
-var client = new {{pascalCase title}}();
+var client = new {{= it.helpers.pascal(it.api.title()) }}();
 ```
 
 ### Browsers
 
 ```html
-<script src="{{paramCase title}}/index.js"></script>
+<script src="{{= it.helpers.param(it.api.title()) }}/index.js"></script>
 
 <script>
-  var client = new {{pascalCase title}}();
+  var client = new {{= it.helpers.pascal(it.api.title()) }}();
 </script>
 ```
 
-{{#if (contains (pluck security "type") "OAuth 2.0")}}
+{{? it.api.securitySchemes().some(function (x) { return x.type() === 'OAuth 2.0' }) }}
 ### Authentication
 
 #### OAuth 2.0
@@ -39,15 +37,15 @@ var client = new {{pascalCase title}}();
 This API supports authentication with [OAuth 2.0](https://github.com/mulesoft/js-client-oauth2). Initialize the `OAuth2` instance with the application client id, client secret and a redirect uri to authenticate with users.
 
 ```js
-var auth = new {{pascalCase title}}.security.<method>({
+var auth = new {{= it.helpers.pascal(it.api.title()) }}.security.<method>({
   clientId:     '123',
   clientSecret: 'abc',
   redirectUri:  'http://example.com/auth/callback'
 });
 
-// Available methods for OAuth 2.0:{{#each security}}{{#if (equal this.type "OAuth 2.0")}}
-// {{camelCase @key}}
-{{/if}}{{/each}}
+// Available methods for OAuth 2.0:{{~ it.api.securitySchemes().filter(function (x) { return x.type() === 'OAuth 2.0'}) :scheme }}
+// - {{= it.helpers.camel(scheme.type()) }}
+{{~}}
 ```
 
 **All `getToken()` calls are asynchronous and return promise objects which resolve to an access token instance.**
@@ -87,17 +85,17 @@ client.resource('/').get(null, {
 });
 
 // New API client instance.
-var client = new {{pascalCase title}}({
+var client = new {{= it.helpers.pascal(it.api.title()) }}({
   user: token
 });
 ```
 
-{{/if}}### Options
+{{?}}### Options
 
 You can set options when you initialize a client or at any time with the `options` property. You may also override options for a single request by passing an object as the second argument of any request method. For example:
 
 ```javascript
-var client = new {{pascalCase title}}({ ... });
+var client = new {{= it.helpers.pascal(it.api.title()) }}({ ... });
 
 client.options = { ... };
 
@@ -114,7 +112,7 @@ client.resource('/').get(null, {
 You can override the base URI by setting the `baseUri` property, or initializing a client with a base URI. For example:
 
 ```javascript
-new {{pascalCase title}}({
+new {{= it.helpers.pascal(it.api.title()) }}({
   baseUri: 'https://example.com'
 });
 ```
@@ -124,76 +122,30 @@ new {{pascalCase title}}({
 If the base URI has parameters inline, you can set them by updating the `baseUriParameters` property. For example:
 
 ```javascript
-client.options.baseUriParameters.version = '{{#if version}}{{version}}{{else}}v3{{/if}}';
+client.options.baseUriParameters.version = '{{? it.api.version() }}{{= it.api.version() }}{{??}}v3{{?}}';
 ```
 
 ### Resources
 
 All methods return a HTTP request instance of [Popsicle](https://github.com/blakeembrey/popsicle), which allows the use of promises (and streaming in node).
 
-{{#each allResources}}{{#if (keys methods)}}#### {{{requestSnippet this}}}
+{{~ it.api.allResources() : resource }}#### {{= it.helpers.requestSnippet(resource) }}
 
-{{#if uriParameters}}{{{parametersSnippet uriParameters}}}
+{{? resource.allUriParameters().length }}{{= it.helpers.parametersSnippet(resource.allUriParameters()) }}
 
-{{/if}}{{#if description}}{{{description}}}
+{{?}}{{? resource.description() }}{{= resource.description() }}
 
-{{/if}}
+{{?}}
 ```js
-var resource = client.{{{requestSnippet this}}};
+var resource = client.{{= it.helpers.requestSnippet(resource) }};
 ```
 
-{{#each methods}}##### {{upperCase method}}
+{{~ resource.methods() : method }}##### {{= method.method().toUpperCase() }}
 
-{{#if description}}{{{description}}}
+{{? method.description() }}{{= method.description() }}
 
-{{/if}}
-```js
-resource.{{key}}().then(function (res) { ... });
-```
-
-{{#if (keys queryParameters)}}##### Query Parameters
-
-```javascript
-{{#if (equal method 'get')}}
-resource.{{key}}({ ... });
-{{else}}
-resource.{{key}}(null, { query: { ... } });
-{{/if}}
-```
-
-{{{parametersSnippet queryParameters}}}
-
-{{/if}}{{#if (keys headers)}}##### Headers
-
-```javascript
-resource.{{key}}(null, {
-  headers: { ... }
-});
-```
-
-{{{parametersSnippet headers}}}
-
-{{/if}}{{#if (keys body)}}##### Body
-
-{{#each body}}
-**{{@key}}**
-
-{{#if schema}}
-```
-{{{schema}}}
-```
-
-{{/if}}{{#if formParameters}}{{{json formParameters 2}}}
-
-{{/if}}{{/each}}{{/if}}{{/each}}{{/if}}{{/each}}
-
-### Custom Resources
-
-You can make requests to a custom path in the API using the `#resource(path)` method.
-
-```javascript
-client.resource('/example/path').get();
-```
+{{?}}
+{{~}}{{~}}
 
 ## License
 

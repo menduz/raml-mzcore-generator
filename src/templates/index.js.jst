@@ -1,0 +1,99 @@
+(function (root, client) {
+  if (typeof define === 'function' && define.amd) {
+    define({{= it.helpers.dependencies(it.api, 'amd') }}}, client)
+  } else if (typeof exports === 'object') {
+    module.exports = client({{= it.helpers.dependencies(it.api, 'node') }})
+  } else {
+    root.{{= it.helpers.pascal(it.api.title()) }} = client({{= it.helpers.dependencies(it.api, 'browser') }})
+  }
+})(this, function ({{= it.helpers.dependencies(it.api) }}) {
+  var TEMPLATE_REGEXP = /\{([^\{\}]+)\}/g
+
+  function template (string, interpolate, defaults) {
+    defaults = defaults || {}
+    interpolate = interpolate || {}
+
+    return string.replace(TEMPLATE_REGEXP, function (match, key) {
+      if (interpolate[key] != null) {
+        return encodeURIComponent(interpolate[key])
+      }
+
+      if (defaults[key] != null) {
+        return encodeURIComponent(defaults[key])
+      }
+
+      return ''
+    })
+  }
+
+  function extend (dest /*, ...source */) {
+    for (var i = 1; i < arguments.length; i++) {
+      for (var key in arguments[i]) {
+        dest[key] = arguments[i][key]
+      }
+    }
+
+    return dest
+  }
+
+  function handleRequest (client, method, path, opts) {
+    var options = extend({}, client.options, opts)
+    var baseUri = template(options.baseUri, options.baseUriParameters)
+
+    var reqOpts = {
+      url: baseUri.replace(/\/$/, '') + template(path, options.uriParameters),
+      method: method,
+      headers: extend({}, options.headers),
+      body: reqBody,
+      query: typeof reqQuery === 'object' ? extend({}, reqQuery) : reqQuery
+    }
+
+    if (options.user && typeof options.user.sign === 'function') {
+      reqOpts = options.user.sign(reqOpts)
+    }
+
+    return client.request(reqOpts)
+  }
+
+  function Client () {
+    this.options = extend({
+      baseUri: {{= it.helpers.stringify(it.api.baseUri().value()) }}},
+      baseUriParameters: {{= it.helpers.stringify(it.helpers.defaultParameters(it.api.allBaseUriParameters())) }}
+    }, options)
+
+    this.resources = new Resources(this)
+  }
+
+  Client.prototype.resource = function (method, path, opts) {
+    return handleRequest(this, method, path, opts)
+  }
+
+  Client.prototype.request = popsicle
+  Client.prototype.form = Client.form = popsicle.form
+  Client.prototype.version = Client.version = {{= it.helpers.stringify(it.api.version()) }}
+
+  Client.Security = {
+{{~ it.api.securitySchemes() : scheme : index }}{{? scheme.type() === 'OAuth 2.0' }}
+    {{= it.helpers.camel(scheme.name()) }}: function (options) {
+      return new ClientOAuth2(extend({{= it.helpers.stringify(scheme.settings().toJSON()) }}, options))
+    }{{? index < it.api.securitySchemes().length - 1 }},{{?}}
+{{?}}{{~}}
+  }
+
+  function Resources (client) {
+    this._client = client
+  }
+
+{{~ it.api.allResources() : resource }}{{~ resource.methods() : method }}
+  Resources.prototype.{{= it.helpers.methodize(method) }} = function (opts) {
+    var options = extend({}, opts, {
+      headers: {{= it.helpers.stringify(it.helpers.defaultParameters(method.headers())) }},
+      uriParameters: {{= it.helpers.stringify(it.helpers.defaultParameters(resource.allUriParameters())) }}
+    })
+
+    return handleRequest(this._client, {{= it.helpers.stringify(method.method()) }}, {{= it.helpers.stringify(resource.completeRelativeUri()) }}, options)
+  }
+{{~}}{{~}}
+
+  return Client
+})

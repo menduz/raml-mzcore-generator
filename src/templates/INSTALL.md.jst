@@ -22,7 +22,7 @@ npm install [git-url] --save
 npm link
 
 # Link in project to local module
-npm link {{paramCase title}}
+npm link {{= it.helpers.param(it.api.title()) }}
 ```
 
 **Note:** You should publish it before you use it publicly.
@@ -34,15 +34,15 @@ npm link {{paramCase title}}
 npm publish
 
 # Install from npm
-npm install {{paramCase title}} --save
+npm install {{= it.helpers.param(it.api.title()) }} --save
 ```
 
 ## Bower
 
 ```bash
 # Register with bower
-bower register {{paramCase title}} [git-url]
+bower register {{= it.helpers.param(it.api.title()) }} [git-url]
 
 # Install from bower
-bower install {{paramCase title}} --save
+bower install {{= it.helpers.param(it.api.title()) }} --save
 ```

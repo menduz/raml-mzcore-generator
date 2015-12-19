@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "native-or-bluebird": "github:typings/typed-native-or-bluebird#2f6bf64abda66d137016576086e9e1c0dac45469",
+    "raml-generator": "npm:raml-generator"
+  },
+  "ambientDependencies": {
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#5cb07b53719466b27cb32f3eb2c7c3e22575ecda"
+  },
+  "ambientDevDependencies": {
+    "dot": "github:DefinitelyTyped/DefinitelyTyped/dot/dot.d.ts#7699097b96225ac9d607d115b113cd5119e3f567",
+    "glob": "github:DefinitelyTyped/DefinitelyTyped/glob/glob.d.ts#a14d724826174d1669d4df04c80f4838b7e71fdf",
+    "minimatch": "github:DefinitelyTyped/DefinitelyTyped/minimatch/minimatch.d.ts#a3900b896f7b3361b79f9b503224777619907d53"
+  },
+  "devDependencies": {
+    "mkdirp": "github:typings/typed-mkdirp#c22e0a7cf2597d5fc9122ca70af19b6638886fc0"
+  }
+}
