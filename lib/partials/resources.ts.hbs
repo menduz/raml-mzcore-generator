@@ -1,0 +1,58 @@
+{{#each allResources}}
+export class {{pascalCase id}} {
+    _uri: string;
+    _client: any;
+    
+    
+    {{#each children}}
+    {{#unless uriParameters}}
+    {{camelCase @key}}: {{pascalCase id}};
+    {{/unless}}
+    {{/each}}
+    
+    
+    constructor(uri: string, client) {
+        this._uri = uri
+        this._client = client
+
+        {{#each children}}
+        {{#unless uriParameters}}
+        this.{{camelCase @key}} = new {{pascalCase id}}(uri + {{{stringify relativeUri}}}, client)
+        {{/unless}}
+        {{/each}}
+    }
+
+    {{#each children}}
+        {{#if uriParameters}}
+        {{camelCase @key}}(... args: any[]) {    
+            var uri = this._uri + template({{{stringify relativeUri}}}, arguments, {{{stringify (pluck uriParameters 'default')}}})
+
+            return new {{pascalCase id}}(uri, this._client)
+        }
+        {{/if}}
+    {{/each}}
+    {{#each methods}}
+    {{camelCase @key}}(body: any, options?: mz.xr.IXrArgs) {
+        {{#if (keys headers)}}
+        options = extend({}, options)
+        options.headers = extend({{{stringify (object (keys headers) (pluck headers 'default'))}}}, options.headers)
+
+        {{/if}}
+        return this._client._request(this._uri, {{{stringify (upperCase method)}}}, body, options)
+    }
+    {{/each}}
+}
+
+{{/each}}
+
+export class CustomResource {
+
+    constructor(private _uri: string, private _client: any) { }
+
+{{#each supportedMethods}}
+    {{camelCase this}}(body: any, options?: mz.xr.IXrArgs) {
+        return this._client._request(this._uri, {{{stringify (upperCase this)}}}, body, options)
+    }
+{{/each}}
+}
+

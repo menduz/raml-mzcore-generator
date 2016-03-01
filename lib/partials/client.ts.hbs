@@ -1,0 +1,59 @@
+export class {{pascalCase title}} {
+    options: any;
+    resources: {{pascalCase resources.id}};
+    
+    constructor(options) {
+        this.options = extend({
+            baseUri: {{{stringify baseUri}}},
+            baseUriParameters: {{{stringify (object (keys baseUriParameters) (pluck baseUriParameters 'default'))}}},
+            options: {}
+        }, options)
+
+        this.resources = new {{pascalCase resources.id}}('', this)
+    }
+
+    resource(route: string, parameters?: any) {
+        var path = '/' + template(route, parameters).replace(/^\//, '')
+
+        return new CustomResource(path, this)
+    }
+
+    request = mz.xr;
+    
+    version = {{{stringify version}}};
+
+    private _request(path: string, method?, body?, options?) {
+        options = extend({}, this.options, options)
+
+        var baseUri = template(options.baseUri, options.baseUriParameters)
+        var hasBody = method !== 'GET' && method !== 'HEAD'
+
+        var reqBody = hasBody && body != null ? body : options.body
+        var reqQuery = !hasBody && body != null ? body : options.query
+
+        var reqOpts = {
+            url: baseUri.replace(/\/$/, '') + path,
+            method: method,
+            headers: extend({}, options.headers),
+            body: reqBody,
+            query: typeof reqQuery === 'object' ? extend({}, reqQuery) : reqQuery,
+            options: extend({}, this.options.options, options.options)
+        }
+
+        if (options.user && typeof options.user.sign === 'function') {
+            reqOpts = options.user.sign(reqOpts)
+        }
+
+        return this.request(reqOpts)
+    }
+    
+    
+    {{#each security}}
+    {{#if (equal this.type "OAuth 2.0")}}
+    {{camelCase @key}}(options?) {
+        return new ClientOAuth2(extend({{{stringify this.settings}}}, options))
+    }
+    {{/if}}
+    {{/each}}
+
+}
