@@ -1,45 +1,29 @@
-# RAML JavaScript Generator
+# RAML Typescript Generator for mzcore
 
 [![NPM version][npm-image]][npm-url]
-[![NPM downloads][downloads-image]][downloads-url]
-[![Build status][travis-image]][travis-url]
-[![Test coverage][coveralls-image]][coveralls-url]
+[![Build Status](https://travis-ci.org/menduz/raml-mzcore-generator.svg?branch=master)](https://travis-ci.org/menduz/raml-mzcore-generator)
+[![Test coverage](https://coveralls.io/repos/github/menduz/raml-mzcore-generator/badge.svg?branch=master)](https://coveralls.io/github/menduz/raml-mzcore-generator?branch=master)
 
-> Generate a JavaScript API client from RAML.
+> Generate a Typescript API client from RAML.
 
 ## Installation
 
 ```
-npm install raml-javascript-generator -g
+npm install raml2mz -g
 ```
 
 ## Usage
 
-This module depends on [raml-generator](https://github.com/mulesoft-labs/raml-generator) and can be used globally or locally with JavaScript.
-
-### Global
-
 ```
-raml-javascript-generator api.raml -o api-client-js
-```
-
-### Locally
-
-```js
-var jsGenerator = require('raml-javascript-generator')
-
-var output = jsGenerator(/* raml, data */)
+raml2mz api.raml -o api-client-ts
+raml2mz https://remote-endpoint.com/api.raml -o remote-api
 ```
 
 ## License
 
 Apache License 2.0
 
-[npm-image]: https://img.shields.io/npm/v/raml-javascript-generator.svg?style=flat
-[npm-url]: https://npmjs.org/package/raml-javascript-generator
-[downloads-image]: https://img.shields.io/npm/dm/raml-javascript-generator.svg?style=flat
-[downloads-url]: https://npmjs.org/package/raml-javascript-generator
-[travis-image]: https://img.shields.io/travis/mulesoft-labs/raml-javascript-generator.svg?style=flat
-[travis-url]: https://travis-ci.org/mulesoft-labs/raml-javascript-generator
-[coveralls-image]: https://img.shields.io/coveralls/mulesoft-labs/raml-javascript-generator.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/mulesoft-labs/raml-javascript-generator?branch=master
+[npm-image]: https://img.shields.io/npm/v/raml2mz.svg?style=flat
+[npm-url]: https://npmjs.org/package/raml2mz
+[downloads-image]: https://img.shields.io/npm/dm/raml2mz.svg?style=flat
+[downloads-url]: https://npmjs.org/package/raml2mz
