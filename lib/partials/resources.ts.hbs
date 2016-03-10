@@ -1,7 +1,7 @@
 {{#each allResources}}
 export class {{pascalCase id}} {
-    _uri: string;
-    _client: any;
+    private _uri: string;
+    private _client: any;
     
     
     {{#each children}}
@@ -32,7 +32,7 @@ export class {{pascalCase id}} {
         {{/if}}
     {{/each}}
     {{#each methods}}
-    {{camelCase @key}}(body: any, options?: mz.xr.IXrArgs) {
+    {{camelCase @key}}(body?: any, options?: mz.xr.IXrArgs) {
         {{#if (keys headers)}}
         options = extend({}, options)
         options.headers = extend({{{stringify (object (keys headers) (pluck headers 'default'))}}}, options.headers)
