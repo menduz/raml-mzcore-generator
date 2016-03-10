@@ -1,7 +1,7 @@
 {
-  "name": "raml-javascript-generator",
+  "name": "raml2mz",
   "version": "0.1.2",
-  "description": "Generate a JavaScript API client from RAML",
+  "description": "Generate a Typescript API client from RAML",
   "main": "raml-javascript-generator.js",
   "files": [
     "raml-javascript-generator.js",
@@ -11,7 +11,7 @@
     "LICENSE"
   ],
   "bin": {
-    "raml-javascript-generator": "bin/raml-javascript-generator.js"
+    "raml2mz": "bin/raml-javascript-generator.js"
   },
   "scripts": {
     "lint": "standard",
@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mulesoft-labs/raml-javascript-generator.git"
+    "url": "git://github.com/menduz/raml-mzcore-generator.git"
   },
   "keywords": [
     "raml",
@@ -41,12 +41,12 @@
     "javascript",
     "interface"
   ],
-  "author": "MuleSoft, Inc.",
+  "author": "MuleSoft, Inc., Agustin Mendez (@menduz)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/mulesoft-labs/raml-javascript-generator/issues"
+    "url": "https://github.com/menduz/raml-mzcore-generator/issues"
   },
-  "homepage": "https://github.com/mulesoft-labs/raml-javascript-generator",
+  "homepage": "https://github.com/menduz/raml-mzcore-generator",
   "devDependencies": {
     "blue-tape": "^0.1.10",
     "browserify": "^11.1.0",
