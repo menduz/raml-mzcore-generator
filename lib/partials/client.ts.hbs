@@ -1,8 +1,22 @@
+export interface I{{pascalCase title}}Options {
+    baseUri?: string;
+    baseUriParameters?: any;
+    options?: mz.xr.IXrArgs;
+    withCredentials?: boolean;
+    user?: { 
+        sign?: (request: T) => T;
+    },
+    body?: any;
+    query?: any;
+    headers?: any;
+}
+
+
 export class {{pascalCase title}} {
     options: any;
     resources: {{pascalCase resources.id}};
     
-    constructor(options) {
+    constructor(options: I{{pascalCase title}}Options) {
         this.options = extend({
             baseUri: {{{stringify baseUri}}},
             baseUriParameters: {{{stringify (object (keys baseUriParameters) (pluck baseUriParameters 'default'))}}},
@@ -22,7 +36,7 @@ export class {{pascalCase title}} {
     
     version = {{{stringify version}}};
 
-    private _request(path: string, method?, body?, options?) {
+    _request(path: string, method?, body?, options?: I{{pascalCase title}}Options) {
         options = extend({}, this.options, options)
 
         var baseUri = template(options.baseUri, options.baseUriParameters)
@@ -31,17 +45,21 @@ export class {{pascalCase title}} {
         var reqBody = hasBody && body != null ? body : options.body
         var reqQuery = !hasBody && body != null ? body : options.query
 
-        var reqOpts = {
+        var reqOpts : any = {
             url: baseUri.replace(/\/$/, '') + path,
             method: method,
             headers: extend({}, options.headers),
-            body: reqBody,
-            query: typeof reqQuery === 'object' ? extend({}, reqQuery) : reqQuery,
+            data: reqBody,
+            params: typeof reqQuery === 'object' ? extend({}, reqQuery) : reqQuery,
             options: extend({}, this.options.options, options.options)
         }
 
         if (options.user && typeof options.user.sign === 'function') {
             reqOpts = options.user.sign(reqOpts)
+        }
+        
+        if('withCredentials' in options){
+            reqOpts.withCredentials = options.withCredentials;
         }
 
         return this.request(reqOpts)
