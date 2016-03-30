@@ -4,7 +4,7 @@ export interface I{{pascalCase title}}Options {
     options?: mz.xr.IXrArgs;
     withCredentials?: boolean;
     user?: { 
-        sign?: (request: T) => T;
+        sign?: <T>(request: T) => T;
     },
     body?: any;
     query?: any;
